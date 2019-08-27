@@ -57,11 +57,30 @@ let templates = {
 
 const categories = Object.keys(templates)
 
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const csvWriter = createCsvWriter({
+    path: 'dataSet.csv',
+    header: [
+        {id: "catKey",title: "catKey" },
+        {id: "category", title: "category"}
+      ]
+  });
+
+let csvdata = [];
+
 for(let key in categories){
     let catKey = categories[key];
     let category = templates[categories[key]];
 
     for(let i = 0; i < 1000; i++){
-        console.log(catKey + ",", category[faker.random.number(category.length - 1)]())
+        csvdata.push({
+            catKey: catKey,
+            category:  category[faker.random.number(category.length - 1)]()
+        });
+        // console.log(catKey + ",", category[faker.random.number(category.length - 1)]())
     }
 }
+
+csvWriter
+  .writeRecords(csvdata)
+  .then(()=> console.log('The CSV file was written successfully'));
